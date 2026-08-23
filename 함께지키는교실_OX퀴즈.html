@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>함께 지키는 교실 · 교육활동보호 OX 퀴즈</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --board:#223229; --board-2:#2c3f34; --chalk:#f4efe1; --chalk-dim:#cfc9b8;
+    --gold:#d9a441; --o-color:#6fae7e; --x-color:#c1554d; --card:#f7f3e8; --ink:#22281f;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;padding:0;min-height:100%;
+    background:radial-gradient(ellipse at top,var(--board-2),var(--board) 70%);
+    color:var(--chalk);font-family:'Noto Sans KR',sans-serif;-webkit-font-smoothing:antialiased;
+  }
+  .stage{max-width:640px;margin:0 auto;padding:30px 20px 60px;min-height:100vh;display:flex;flex-direction:column;}
+
+  /* club header */
+  .club-header{text-align:center;margin-bottom:24px;}
+  .emblem{
+    width:74px;height:74px;margin:0 auto 12px;border-radius:20px;
+    background:linear-gradient(145deg,#2f4438,#1c2a22);border:2px solid var(--gold);
+    display:flex;align-items:center;justify-content:center;font-size:34px;
+    box-shadow:0 8px 22px rgba(0,0,0,.35);
+  }
+  .club-name{font-family:'Noto Serif KR',serif;font-weight:900;font-size:clamp(22px,5.5vw,30px);margin:0;text-shadow:0 1px 0 rgba(0,0,0,.3);}
+  .club-tag{display:inline-block;margin-top:8px;font-size:12px;letter-spacing:.18em;color:var(--gold);font-weight:700;border:1px solid rgba(217,164,65,.5);border-radius:999px;padding:5px 14px;}
+
+  /* live counter */
+  .stock{
+    background:linear-gradient(145deg,rgba(217,164,65,.14),rgba(217,164,65,.04));
+    border:1.5px solid rgba(217,164,65,.5);
+    border-radius:14px;padding:16px 18px;margin:6px 0 16px;
+  }
+  .stock-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;}
+  .stock-label{font-size:13px;color:var(--ink);font-weight:700;display:flex;align-items:center;gap:7px;}
+  .live-dot{width:8px;height:8px;border-radius:50%;background:var(--o-color);box-shadow:0 0 0 0 rgba(111,174,126,.6);animation:pulse 1.8s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(111,174,126,.5);}70%{box-shadow:0 0 0 8px rgba(111,174,126,0);}100%{box-shadow:0 0 0 0 rgba(111,174,126,0);}}
+  .stock-count{font-variant-numeric:tabular-nums;}
+  .stock-count b{font-family:'Noto Serif KR',serif;font-weight:900;font-size:30px;color:#a9762a;}
+  .stock-count span{font-size:15px;color:rgba(34,40,31,.5);}
+  .stock-bar{height:9px;border-radius:999px;background:rgba(34,40,31,.12);overflow:hidden;}
+  .stock-bar i{display:block;height:100%;background:linear-gradient(90deg,#f5d98a,var(--gold));border-radius:999px;transition:width .5s ease;width:0%;}
+  .stock-note{font-size:11.5px;color:rgba(34,40,31,.6);margin-top:9px;}
+  .stock.sold-out .stock-count b{color:var(--x-color);}
+  .stock.sold-out .stock-bar i{background:var(--x-color);}
+
+  /* panels */
+  .panel{background:var(--card);color:var(--ink);border-radius:20px;padding:32px 28px 28px;box-shadow:0 18px 40px rgba(0,0,0,.35);}
+  .panel h2{font-family:'Noto Serif KR',serif;font-weight:900;font-size:22px;margin:0 0 8px;text-align:center;}
+  .lead{font-size:14.5px;line-height:1.7;color:rgba(34,40,31,.75);text-align:center;margin:0 0 20px;}
+
+  .rule{display:flex;gap:12px;align-items:center;padding:13px 15px;border-radius:13px;margin-bottom:10px;font-size:14px;}
+  .rule .r-ic{font-size:26px;flex-shrink:0;width:32px;text-align:center;}
+  .rule.gold{background:linear-gradient(135deg,rgba(217,164,65,.18),rgba(217,164,65,.05));border:1px solid rgba(217,164,65,.4);}
+  .rule.gold b{color:#a9762a;}
+  .rule.plain{background:rgba(34,40,31,.05);}
+  .rule .r-txt b{display:block;margin-bottom:1px;}
+  .rule .r-txt span{font-size:12.5px;color:rgba(34,40,31,.65);}
+
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px;}
+  .field input{width:100%;padding:13px 14px;font-size:15px;border:1.5px solid rgba(34,40,31,.18);border-radius:11px;background:#fffdf7;color:var(--ink);font-family:inherit;}
+  .field input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(217,164,65,.2);}
+  .form-error{color:var(--x-color);font-size:13px;min-height:18px;margin:2px 0 8px;text-align:center;}
+
+  .big-btn{width:100%;background:var(--ink);color:var(--chalk);border:none;font-family:inherit;font-weight:700;font-size:17px;padding:15px;border-radius:999px;cursor:pointer;box-shadow:0 10px 24px rgba(34,40,31,.35);transition:transform .12s ease;}
+  .big-btn:hover{transform:translateY(-2px);}
+  .big-btn:active{transform:translateY(1px);}
+  .big-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+  .fineprint{font-size:11.5px;color:rgba(34,40,31,.5);text-align:center;margin-top:14px;line-height:1.5;}
+
+  /* progress */
+  .whoami{text-align:center;font-size:12px;color:var(--chalk-dim);margin-bottom:14px;opacity:.75;}
+  .progress-wrap{display:flex;gap:6px;justify-content:center;margin-bottom:18px;flex-wrap:wrap;}
+  .dot{width:9px;height:9px;border-radius:50%;background:rgba(244,239,225,.18);transition:all .25s ease;}
+  .dot.answered{background:var(--chalk-dim);}
+  .dot.current{width:12px;height:12px;box-shadow:0 0 0 3px rgba(217,164,65,.35);background:var(--gold);}
+  .score-line{text-align:center;font-size:13px;color:var(--chalk-dim);margin-bottom:16px;font-variant-numeric:tabular-nums;}
+  .score-line b{color:var(--gold);}
+
+  /* quiz card */
+  .card{background:var(--card);color:var(--ink);border-radius:18px;padding:38px 26px 30px;position:relative;flex:1;display:flex;flex-direction:column;min-height:320px;box-shadow:0 18px 40px rgba(0,0,0,.35),0 2px 0 rgba(255,255,255,.4) inset;}
+  .card::before{content:"";position:absolute;top:14px;left:24px;right:24px;height:1px;background:repeating-linear-gradient(to right,rgba(34,40,31,.12) 0 10px,transparent 10px 18px);}
+  .qnum{font-family:'Noto Serif KR',serif;font-weight:900;font-size:14px;color:var(--gold);background:var(--ink);padding:4px 12px;border-radius:999px;margin-bottom:18px;align-self:flex-start;letter-spacing:.05em;}
+  .question{font-family:'Noto Serif KR',serif;font-weight:700;font-size:clamp(18px,4.8vw,22px);line-height:1.6;margin:0 0 28px;flex:1;}
+  .choices{display:flex;gap:18px;justify-content:center;margin-top:auto;}
+  .choice-btn{width:108px;height:108px;border-radius:50%;cursor:pointer;font-family:'Noto Serif KR',serif;font-weight:900;font-size:42px;display:flex;align-items:center;justify-content:center;background:transparent;transition:transform .12s ease,background .15s ease,color .15s ease;}
+  .choice-btn:hover{transform:translateY(-3px);}
+  .choice-btn:active{transform:translateY(1px) scale(.97);}
+  .choice-btn.o{color:var(--o-color);border:6px solid var(--o-color);}
+  .choice-btn.x{color:var(--x-color);border:6px solid var(--x-color);}
+  .choice-btn.o.selected{background:var(--o-color);color:#fff;}
+  .choice-btn.x.selected{background:var(--x-color);color:#fff;}
+  .choice-btn:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
+  .pick-hint{text-align:center;font-size:13px;color:rgba(34,40,31,.55);margin-top:15px;min-height:18px;}
+  .nav-row{display:flex;justify-content:center;margin-top:18px;}
+  .next-btn{background:var(--gold);color:var(--ink);border:none;font-family:inherit;font-weight:700;font-size:15px;padding:12px 32px;border-radius:999px;cursor:pointer;box-shadow:0 8px 20px rgba(217,164,65,.35);transition:transform .12s ease;opacity:0;pointer-events:none;}
+  .next-btn.ready{opacity:1;pointer-events:auto;}
+  .next-btn:hover{transform:translateY(-2px);}
+
+  /* result */
+  .result-panel{text-align:center;}
+  .result-score{font-family:'Noto Serif KR',serif;font-weight:900;font-size:60px;margin:8px 0 0;line-height:1;}
+  .result-score span{font-size:26px;color:rgba(34,40,31,.5);}
+  .result-msg{font-size:15px;margin:12px 0 20px;color:rgba(34,40,31,.75);line-height:1.6;}
+  .prize-award{margin:4px 0 22px;padding:26px 22px;border-radius:16px;animation:pop .4s cubic-bezier(.2,1.4,.5,1);}
+  .prize-award.keyring{background:linear-gradient(135deg,#f5d98a,#d9a441);color:#4a3410;box-shadow:0 12px 30px rgba(217,164,65,.4);}
+  .prize-award.snack{background:#eee7d6;color:var(--ink);box-shadow:0 10px 24px rgba(0,0,0,.15);}
+  @keyframes pop{0%{transform:scale(.9);opacity:0;}100%{transform:scale(1);opacity:1;}}
+  .prize-award .pa-icon{font-size:48px;}
+  .prize-award .pa-label{font-size:12px;letter-spacing:.1em;font-weight:700;opacity:.75;margin-top:4px;}
+  .prize-award .pa-name{font-family:'Noto Serif KR',serif;font-weight:900;font-size:23px;margin:4px 0 6px;}
+  .prize-award .pa-desc{font-size:13.5px;line-height:1.55;}
+  .pickup{margin-top:14px;padding:11px 14px;border-radius:11px;background:rgba(0,0,0,.08);font-size:13px;font-weight:700;}
+  .prize-award.keyring .pickup{background:rgba(74,52,16,.15);}
+
+  .review-list{text-align:left;display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+  .review-item{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:12px;background:rgba(34,40,31,.04);font-size:13.5px;line-height:1.5;}
+  .review-item.wrong-item{background:rgba(193,85,77,.08);}
+  .review-mark{flex-shrink:0;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#fff;}
+  .review-mark.ok{background:var(--o-color);}
+  .review-mark.no{background:var(--x-color);}
+  .review-text b{display:block;margin-bottom:2px;font-weight:700;}
+  .review-answer{color:rgba(34,40,31,.55);font-size:12.5px;}
+  .result-note{font-size:12px;color:rgba(34,40,31,.5);}
+
+  .locked-icon{font-size:48px;text-align:center;margin-bottom:8px;}
+  .config-warn{background:#c1554d;color:#fff;border-radius:12px;padding:12px 16px;font-size:13px;line-height:1.55;margin-bottom:18px;text-align:center;}
+
+  .spinner{display:inline-block;width:16px;height:16px;border:2.5px solid rgba(244,239,225,.3);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .hidden{display:none !important;}
+  @media (max-width:420px){.choice-btn{width:92px;height:92px;font-size:36px;}}
+  @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important;}}
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <div class="club-header">
+    <div class="emblem">🛡️</div>
+    <h1 class="club-name">함께 지키는 교실</h1>
+    <span class="club-tag">교육활동보호 동아리</span>
+  </div>
+
+  <!-- ===== Entry ===== -->
+  <div id="entryScreen">
+    <div id="configWarn" class="config-warn hidden">
+      ⚠️ Supabase 설정이 필요합니다. 파일 상단의 <b>SUPABASE_URL</b>과 <b>SUPABASE_ANON_KEY</b>를 입력해 주세요.
+    </div>
+
+    <div class="panel">
+      <h2>교육활동보호 OX 퀴즈</h2>
+      <p class="lead">전체 문제 중 <b>10문제</b>가 무작위로 출제돼요.<br>정답 여부는 <b>마지막에 한 번만</b> 알려드립니다.</p>
+
+      <div class="rule gold">
+        <div class="r-ic">🔑</div>
+        <div class="r-txt"><b>10문제 모두 정답 → 키캡 키링</b><span>동아리에서 직접 제작한 한정 키캡 키링 (선착순 50개)</span></div>
+      </div>
+      <div class="rule plain">
+        <div class="r-ic">🍬</div>
+        <div class="r-txt"><b>0 ~ 9문제 정답 → 간식</b><span>참여해 준 모든 학생에게 간식을 드려요</span></div>
+      </div>
+
+      <div style="height:8px;"></div>
+      <div class="field"><label for="inpNum">학번</label><input id="inpNum" type="text" inputmode="numeric" placeholder="예) 30215" autocomplete="off"></div>
+      <div class="field"><label for="inpName">이름</label><input id="inpName" type="text" placeholder="예) 홍길동" autocomplete="off"></div>
+      <div class="form-error" id="formError"></div>
+
+      <div class="stock" id="stockBox">
+        <div class="stock-top">
+          <div class="stock-label"><span class="live-dot"></span> 남은 키캡 키링</div>
+          <div class="stock-count"><b id="stockNum">–</b><span id="stockTotal"> / 50</span></div>
+        </div>
+        <div class="stock-bar"><i id="stockBar"></i></div>
+        <div class="stock-note" id="stockNote">실시간 재고를 불러오는 중…</div>
+      </div>
+
+      <button class="big-btn" id="startBtn">퀴즈 시작하기</button>
+      <p class="fineprint">퀴즈는 <b>1인 1회</b>만 응시할 수 있습니다. 시작 후에는 다시 풀 수 없어요.</p>
+    </div>
+  </div>
+
+  <!-- ===== Already done ===== -->
+  <div id="lockedScreen" class="hidden">
+    <div class="panel result-panel">
+      <div class="locked-icon">🔒</div>
+      <h2>이미 참여한 퀴즈예요</h2>
+      <p class="lead" id="lockedInfo"></p>
+      <div id="lockedPrize"></div>
+    </div>
+  </div>
+
+  <!-- ===== Quiz ===== -->
+  <div id="quizScreen" class="hidden">
+    <div class="whoami" id="whoami"></div>
+    <div class="progress-wrap" id="progressWrap"></div>
+    <div class="score-line" id="scoreLine"></div>
+    <div class="card">
+      <span class="qnum" id="qnum">Q1</span>
+      <p class="question" id="questionText"></p>
+      <div class="choices">
+        <button class="choice-btn o" id="btnO" aria-label="O">O</button>
+        <button class="choice-btn x" id="btnX" aria-label="X">X</button>
+      </div>
+      <div class="pick-hint" id="pickHint">O 또는 X를 선택하세요</div>
+    </div>
+    <div class="nav-row"><button class="next-btn" id="nextBtn">다음 문제</button></div>
+  </div>
+
+  <!-- ===== Result ===== -->
+  <div id="resultScreen" class="hidden">
+    <div class="panel result-panel">
+      <div class="lead" style="opacity:.6;margin-bottom:0;letter-spacing:.1em;font-size:12px;">최종 결과</div>
+      <div class="result-score"><span id="finalCorrect">0</span><span> / 10</span></div>
+      <div class="result-msg" id="resultMsg"></div>
+      <div id="prizeAward"></div>
+      <p class="result-note">정답 여부는 공개되지 않으며, 퀴즈는 1회만 응시할 수 있어요.</p>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ============================================================
+   ① Supabase 설정 — 아래 두 값을 본인 프로젝트 값으로 바꾸세요
+   (Supabase 대시보드 > Project Settings > API 에서 확인)
+   ============================================================ */
+const SUPABASE_URL = "https://YOUR-PROJECT.supabase.co";
+const SUPABASE_ANON_KEY = "YOUR-ANON-KEY";
+
+/* ============================================================
+   ② 문제 은행 — 이 중 10문제 무작위 출제 (자유롭게 추가/수정)
+   ============================================================ */
+const QUESTION_POOL = [
+  { q: "교권과 학생 인권은 서로 대립하는 개념이라, 하나를 보호하면 다른 하나는 반드시 약해진다.", a: "X" },
+  { q: "교사의 정당한 생활지도는 법적으로 아동학대로 보지 않는다.", a: "O" },
+  { q: "수업 중 교사의 정당한 지시에 반복적으로 불응하며 의도적으로 수업을 방해하는 것도 교육활동 침해에 해당할 수 있다.", a: "O" },
+  { q: "학생이 교사를 몰래 촬영해 SNS에 올리는 것은 표현의 자유이므로 아무런 문제가 되지 않는다.", a: "X" },
+  { q: "교육활동 침해가 발생하면 학교에는 교권보호위원회를 통해 사안을 처리하는 절차가 마련되어 있다.", a: "O" },
+  { q: "자신의 권리를 주장하는 것과 다른 사람의 권리를 침해하는 것은 서로 구분되는 문제다.", a: "O" },
+  { q: "친구가 수업을 방해할 때 이를 선생님께 알리는 것은 단순한 고자질일 뿐, 학습권 보호와는 관련이 없다.", a: "X" },
+  { q: "교사에게 모욕적인 말을 했더라도 사과만 하면 어떤 경우에도 아무 조치가 이루어지지 않는다.", a: "X" },
+  { q: "교육활동 침해에는 신체적 폭력뿐 아니라 명예훼손이나 모욕 같은 언어적 행위도 포함된다.", a: "O" },
+  { q: "학생의 의견 표현은 존중되어야 하지만, 그 방법이 다른 사람의 권리를 침해해서는 안 된다.", a: "O" },
+  { q: "정당한 교육활동에 대해 비판적 의견을 예의 있게 전달하는 것은 교권 침해에 해당한다.", a: "X" },
+  { q: "교육활동보호 제도의 목적은 학생을 처벌하는 것 그 자체에 있다.", a: "X" },
+  { q: "교육활동 침해를 당한 교사는 심리 상담이나 치료 등의 보호 조치를 받을 수 있다.", a: "O" },
+  { q: "한 학생의 수업 방해는 그 학생만의 문제일 뿐, 다른 학생들에게는 영향을 주지 않는다.", a: "X" },
+  { q: "학교 규칙은 학생의 자유를 무조건 억누르기 위한 것이므로 지킬 필요가 없다.", a: "X" },
+  { q: "교사에게도 학생을 인격적으로 존중하고 차별하지 않을 책임이 있다.", a: "O" },
+  { q: "교육활동 침해 행위를 한 학생에게는 특별교육이나 심리치료 같은 조치가 내려질 수 있다.", a: "O" },
+  { q: "갈등이 생겼을 때 감정적으로 맞대응하기보다 대화와 정해진 절차로 해결하는 것이 바람직하다.", a: "O" },
+  { q: "교권이 강조되면 학생은 교사에게 어떤 의견도 말할 수 없게 되는 것이다.", a: "X" },
+  { q: "다수의 학생이 원한다면 소수 학생의 학습권은 무시해도 된다.", a: "X" },
+  { q: "사이버 공간에서 교사나 친구를 비방하는 것은 직접 대면한 상황이 아니므로 인권 침해가 아니다.", a: "X" },
+  { q: "문제 상황을 목격한 방관자도 도움을 요청하거나 알리는 역할을 할 수 있다.", a: "O" },
+  { q: "교육활동 보호의 궁극적인 목적은 모든 학생이 안전하고 존중받는 환경에서 배울 수 있도록 하는 것이다.", a: "O" },
+  { q: "상대가 먼저 잘못했다면 폭력이나 모욕으로 되갚는 것도 정당한 해결 방법이다.", a: "X" }
+];
+
+const QUESTIONS_PER_QUIZ = 10;
+const PICKUP_PLACE = "생활교육부실";
+
+/* ============================================================
+   ③ 초기화
+   ============================================================ */
+const configured = !SUPABASE_URL.includes("YOUR-PROJECT") && !SUPABASE_ANON_KEY.includes("YOUR-ANON");
+let sb = null;
+if (configured) sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let quizQuestions = [], userAnswers = [], current = 0, selected = null;
+let studentNum = "", studentName = "";
+
+const $ = id => document.getElementById(id);
+const entryScreen=$('entryScreen'), lockedScreen=$('lockedScreen'), quizScreen=$('quizScreen'), resultScreen=$('resultScreen');
+const inpNum=$('inpNum'), inpName=$('inpName'), formError=$('formError'), startBtn=$('startBtn');
+const progressWrap=$('progressWrap'), scoreLine=$('scoreLine'), whoami=$('whoami');
+const qnumEl=$('qnum'), questionText=$('questionText'), btnO=$('btnO'), btnX=$('btnX'), pickHint=$('pickHint'), nextBtn=$('nextBtn');
+
+if (!configured) $('configWarn').classList.remove('hidden');
+
+/* ===== 실시간 재고 ===== */
+async function refreshStock(){
+  if (!configured){ $('stockNote').textContent = "설정 후 재고가 표시됩니다."; $('stockNum').textContent="–"; return; }
+  try{
+    const { data, error } = await sb.rpc('get_keyring_remaining');
+    if (error) throw error;
+    const row = Array.isArray(data) ? data[0] : data;
+    const remaining = row.remaining, total = row.total;
+    $('stockNum').textContent = remaining;
+    $('stockTotal').textContent = " / " + total;
+    $('stockBar').style.width = Math.max(0, Math.min(100, (remaining/total)*100)) + "%";
+    const box = $('stockBox');
+    if (remaining <= 0){
+      box.classList.add('sold-out');
+      $('stockNote').textContent = "키캡 키링이 모두 소진되었어요. 지금 참여하면 간식을 받을 수 있어요.";
+    } else {
+      box.classList.remove('sold-out');
+      $('stockNote').textContent = "10문제를 모두 맞힌 학생에게 선착순으로 지급돼요.";
+    }
+  }catch(e){
+    $('stockNote').textContent = "재고를 불러오지 못했어요. 잠시 후 다시 시도됩니다.";
+  }
+}
+if (configured){ refreshStock(); setInterval(refreshStock, 6000); window.addEventListener('focus', refreshStock); }
+else refreshStock();
+
+/* ===== 시작 ===== */
+startBtn.addEventListener('click', async () => {
+  const num = inpNum.value.trim(), name = inpName.value.trim();
+  if(!num || !name){ formError.textContent = "학번과 이름을 모두 입력해 주세요."; return; }
+  if(!configured){ formError.textContent = "Supabase 설정이 필요합니다."; return; }
+  formError.textContent = "";
+  studentNum = num; studentName = name;
+
+  startBtn.disabled = true;
+  const orig = startBtn.textContent;
+  startBtn.innerHTML = '<span class="spinner"></span> 확인 중…';
+  try{
+    const { data, error } = await sb.rpc('check_participant', { p_num: num, p_name: name });
+    if (error) throw error;
+    if (Array.isArray(data) && data.length > 0){ showLocked(data[0].score, data[0].prize); return; }
+    beginQuiz();
+  }catch(e){
+    formError.textContent = "네트워크 오류로 시작하지 못했어요. 다시 시도해 주세요.";
+  }finally{
+    startBtn.disabled = false; startBtn.textContent = orig;
+  }
+});
+
+function beginQuiz(){
+  quizQuestions = pickRandom(QUESTION_POOL, QUESTIONS_PER_QUIZ);
+  userAnswers = new Array(quizQuestions.length).fill(null);
+  current = 0; selected = null;
+  whoami.textContent = `${studentNum} ${studentName}`;
+  entryScreen.classList.add('hidden');
+  quizScreen.classList.remove('hidden');
+  buildDots(); renderQuestion();
+}
+
+function pickRandom(arr, n){
+  const c = arr.slice();
+  for(let i=c.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [c[i],c[j]]=[c[j],c[i]]; }
+  return c.slice(0, Math.min(n, c.length));
+}
+
+/* ===== 이미 참여 ===== */
+function showLocked(score, prize){
+  entryScreen.classList.add('hidden');
+  lockedScreen.classList.remove('hidden');
+  $('lockedInfo').innerHTML = `<b>${studentNum} ${studentName}</b> 님은 이미 퀴즈에 참여했어요.<br>결과: <b>${score} / ${QUESTIONS_PER_QUIZ}</b>`;
+  $('lockedPrize').innerHTML = prizeCardHTML(prize);
+}
+
+/* ===== 진행 ===== */
+function buildDots(){
+  progressWrap.innerHTML='';
+  quizQuestions.forEach((_,i)=>{ const d=document.createElement('div'); d.className='dot'; d.id='dot'+i; progressWrap.appendChild(d); });
+}
+function updateDots(){
+  quizQuestions.forEach((_,i)=>{ const d=$('dot'+i); d.classList.remove('answered','current');
+    if(userAnswers[i]!==null) d.classList.add('answered'); if(i===current) d.classList.add('current'); });
+}
+function updateScoreLine(){
+  const done=userAnswers.filter(a=>a!==null).length;
+  scoreLine.innerHTML=`문제 <b>${current+1}</b> / ${quizQuestions.length} &nbsp;·&nbsp; 응답 완료 <b>${done}</b>개`;
+}
+function renderQuestion(){
+  const item=quizQuestions[current];
+  qnumEl.textContent='Q'+(current+1);
+  questionText.textContent=item.q;
+  selected=userAnswers[current];
+  btnO.classList.toggle('selected',selected==='O');
+  btnX.classList.toggle('selected',selected==='X');
+  pickHint.textContent=selected?'선택을 바꾸려면 다시 누르세요':'O 또는 X를 선택하세요';
+  nextBtn.textContent=(current===quizQuestions.length-1)?'제출하고 결과 보기':'다음 문제';
+  nextBtn.classList.toggle('ready',selected!==null);
+  updateDots(); updateScoreLine();
+}
+function pick(choice){
+  selected=choice; userAnswers[current]=choice;
+  btnO.classList.toggle('selected',choice==='O'); btnX.classList.toggle('selected',choice==='X');
+  pickHint.textContent='선택을 바꾸려면 다시 누르세요'; nextBtn.classList.add('ready');
+  updateDots(); updateScoreLine();
+}
+btnO.addEventListener('click',()=>pick('O'));
+btnX.addEventListener('click',()=>pick('X'));
+nextBtn.addEventListener('click',()=>{
+  if(selected===null) return;
+  if(current<quizQuestions.length-1){ current++; renderQuestion(); }
+  else submitResults();
+});
+
+/* ===== 상품 카드 HTML ===== */
+function prizeCardHTML(prize){
+  if(prize==='keyring'){
+    return `<div class="prize-award keyring">
+      <div class="pa-icon">🔑</div>
+      <div class="pa-label">축하합니다 · 만점!</div>
+      <div class="pa-name">키캡 키링</div>
+      <div class="pa-desc">동아리에서 직접 제작한 한정 키캡 키링을 받을 수 있어요.</div>
+      <div class="pickup">📍 ${PICKUP_PLACE}에서 받아가세요</div>
+    </div>`;
+  }
+  return `<div class="prize-award snack">
+    <div class="pa-icon">🍬</div>
+    <div class="pa-label">참여 상품</div>
+    <div class="pa-name">간식</div>
+    <div class="pa-desc">참여해 줘서 고마워요! 맛있는 간식을 준비했어요.</div>
+    <div class="pickup">📍 ${PICKUP_PLACE}에서 받아가세요</div>
+  </div>`;
+}
+
+/* ===== 제출 ===== */
+async function submitResults(){
+  let correct=0;
+  quizQuestions.forEach((item,i)=>{ if(userAnswers[i]===item.a) correct++; });
+
+  nextBtn.disabled=true; nextBtn.innerHTML='<span class="spinner"></span> 제출 중…';
+
+  let prize = correct>=10 ? 'keyring' : 'snack';
+  let status = 'ok';
+  try{
+    const { data, error } = await sb.rpc('submit_quiz', { p_num: studentNum, p_name: studentName, p_score: correct });
+    if (error) throw error;
+    const row = Array.isArray(data) ? data[0] : data;
+    if (row){ status=row.status; prize=row.prize; correct=row.score; }
+  }catch(e){
+    // 저장 실패 시에도 결과 화면은 보여주되, 로컬 계산값으로 표시
+    prize = correct>=10 ? 'keyring' : 'snack';
+  }finally{
+    nextBtn.disabled=false; nextBtn.textContent='제출하고 결과 보기';
+  }
+
+  quizScreen.classList.add('hidden');
+  resultScreen.classList.remove('hidden');
+  $('finalCorrect').textContent = correct;
+
+  let msg;
+  if(status==='already') msg="이미 참여한 기록이 있어 이전 결과를 보여드려요.";
+  else if(correct>=10 && prize==='keyring') msg="완벽해요! 10문제를 모두 맞혔어요.";
+  else if(correct>=10 && prize==='snack') msg="만점이에요! 다만 키캡 키링이 모두 소진되어 간식으로 준비했어요.";
+  else if(correct>=8) msg="아주 잘했어요! 핵심을 잘 알고 있네요.";
+  else if(correct>=5) msg="잘했어요! 참여해 줘서 고마워요.";
+  else msg="참여해 줘서 고마워요!";
+  $('resultMsg').textContent = msg;
+
+  $('prizeAward').innerHTML = prizeCardHTML(prize);
+}
+</script>
+</body>
+</html>
