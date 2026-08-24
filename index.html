@@ -169,8 +169,8 @@
       </div>
 
       <div style="height:8px;"></div>
-      <div class="field"><label for="inpNum">학번</label><input id="inpNum" type="text" inputmode="numeric" placeholder="예) 30215" autocomplete="off"></div>
-      <div class="field"><label for="inpName">이름</label><input id="inpName" type="text" placeholder="예) 홍길동" autocomplete="off"></div>
+      <div class="field"><label for="inpNum">학번</label><input id="inpNum" type="text" inputmode="numeric" placeholder="예) 3601" autocomplete="off"></div>
+      <div class="field"><label for="inpName">이름</label><input id="inpName" type="text" placeholder="예) 송우현" autocomplete="off"></div>
       <div class="form-error" id="formError"></div>
 
       <div class="stock" id="stockBox">
@@ -264,6 +264,17 @@ const QUESTION_POOL = [
   { q: "문제 상황을 목격한 방관자도 도움을 요청하거나 알리는 역할을 할 수 있다.", a: "O" },
   { q: "교육활동 보호의 궁극적인 목적은 모든 학생이 안전하고 존중받는 환경에서 배울 수 있도록 하는 것이다.", a: "O" },
   { q: "상대가 먼저 잘못했다면 폭력이나 모욕으로 되갚는 것도 정당한 해결 방법이다.", a: "X" }
+  { q: "학생이 잘못을 했더라도 교사는 학생의 인격을 존중하며 지도해야 한다.", a: "O" },
+  { q: "교육활동 침해 사안에서는 피해 교원과 가해 학생을 분리하는 조치가 이루어질 수 있다.", a: "O" },
+  { q: "장난이었다고 말하면, 교사를 조롱하거나 모욕한 행동은 무조건 없던 일이 된다.", a: "X" },
+  { q: "교육활동 침해는 학교 건물 안에서 일어난 경우에만 문제가 된다.", a: "X" },
+  { q: "다른 친구가 발표할 때 야유하거나 비웃는 것도 그 친구의 권리를 침해하는 행동이 될 수 있다.", a: "O" },
+  { q: "교사의 정당한 지도에 따르는 것은 학생으로서 지켜야 할 책임 중 하나다.", a: "O" },
+  { q: "나에게 직접 피해가 없다면 친구가 괴롭힘당하는 것을 못 본 척해도 된다.", a: "X" },
+  { q: "교육활동을 보호하는 것은 결국 수업의 질을 높여 학생들에게도 도움이 된다.", a: "O" },
+  { q: "동의 없이 교사나 친구의 사진·영상을 함부로 퍼뜨리는 것은 권리 침해가 될 수 있다.", a: "O" },
+  { q: "학교 규칙이 불합리하다고 느껴질 때는 정해진 절차로 개선을 건의하기보다 그냥 무시하는 것이 옳다.", a: "X" }
+];  
 ];
 
 const QUESTIONS_PER_QUIZ = 10;
