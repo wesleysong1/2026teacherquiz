@@ -119,14 +119,6 @@
   .pickup{margin-top:14px;padding:11px 14px;border-radius:11px;background:rgba(0,0,0,.08);font-size:13px;font-weight:700;}
   .prize-award.keyring .pickup{background:rgba(74,52,16,.15);}
 
-  .review-list{text-align:left;display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
-  .review-item{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:12px;background:rgba(34,40,31,.04);font-size:13.5px;line-height:1.5;}
-  .review-item.wrong-item{background:rgba(193,85,77,.08);}
-  .review-mark{flex-shrink:0;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#fff;}
-  .review-mark.ok{background:var(--o-color);}
-  .review-mark.no{background:var(--x-color);}
-  .review-text b{display:block;margin-bottom:2px;font-weight:700;}
-  .review-answer{color:rgba(34,40,31,.55);font-size:12.5px;}
   .result-note{font-size:12px;color:rgba(34,40,31,.5);}
 
   .locked-icon{font-size:48px;text-align:center;margin-bottom:8px;}
@@ -160,8 +152,8 @@
       <p class="lead">전체 문제 중 <b>10문제</b>가 무작위로 출제돼요.<br>정답 여부는 <b>마지막에 한 번만</b> 알려드립니다.</p>
 
       <div class="rule gold">
-        <div class="r-ic">🔑</div>
-        <div class="r-txt"><b>10문제 모두 정답 → 키캡 키링</b><span>동아리에서 직접 제작한 한정 키캡 키링 (선착순 50개)</span></div>
+        <div class="r-ic">✏️</div>
+        <div class="r-txt"><b>10문제 모두 정답 → 공부 잇-템</b><span>동아리에서 준비한 인기 공부 잇-템 (선착순 100개)</span></div>
       </div>
       <div class="rule plain">
         <div class="r-ic">🍬</div>
@@ -169,14 +161,14 @@
       </div>
 
       <div style="height:8px;"></div>
-      <div class="field"><label for="inpNum">학번</label><input id="inpNum" type="text" inputmode="numeric" placeholder="예) 3601" autocomplete="off"></div>
-      <div class="field"><label for="inpName">이름</label><input id="inpName" type="text" placeholder="예) 송우현" autocomplete="off"></div>
+      <div class="field"><label for="inpNum">학번</label><input id="inpNum" type="text" inputmode="numeric" placeholder="예) 30215" autocomplete="off"></div>
+      <div class="field"><label for="inpName">이름</label><input id="inpName" type="text" placeholder="예) 홍길동" autocomplete="off"></div>
       <div class="form-error" id="formError"></div>
 
       <div class="stock" id="stockBox">
         <div class="stock-top">
-          <div class="stock-label"><span class="live-dot"></span> 남은 키캡 키링</div>
-          <div class="stock-count"><b id="stockNum">–</b><span id="stockTotal"> / 50</span></div>
+          <div class="stock-label"><span class="live-dot"></span> 남은 공부 잇-템</div>
+          <div class="stock-count"><b id="stockNum">–</b><span id="stockTotal"> / 100</span></div>
         </div>
         <div class="stock-bar"><i id="stockBar"></i></div>
         <div class="stock-note" id="stockNote">실시간 재고를 불러오는 중…</div>
@@ -233,7 +225,7 @@
    ① Supabase 설정 — 아래 두 값을 본인 프로젝트 값으로 바꾸세요
    (Supabase 대시보드 > Project Settings > API 에서 확인)
    ============================================================ */
-const SUPABASE_URL = "https://iuxztdbnkomzryvjdmok.supabase.co/";
+const SUPABASE_URL = "https://iuxztdbnkomzryvjdmok.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_GD-K83rOj-lod-tdLiC8wA_sgBYqSfi";
 
 /* ============================================================
@@ -263,7 +255,7 @@ const QUESTION_POOL = [
   { q: "사이버 공간에서 교사나 친구를 비방하는 것은 직접 대면한 상황이 아니므로 인권 침해가 아니다.", a: "X" },
   { q: "문제 상황을 목격한 방관자도 도움을 요청하거나 알리는 역할을 할 수 있다.", a: "O" },
   { q: "교육활동 보호의 궁극적인 목적은 모든 학생이 안전하고 존중받는 환경에서 배울 수 있도록 하는 것이다.", a: "O" },
-  { q: "상대가 먼저 잘못했다면 폭력이나 모욕으로 되갚는 것도 정당한 해결 방법이다.", a: "X" }
+  { q: "상대가 먼저 잘못했다면 폭력이나 모욕으로 되갚는 것도 정당한 해결 방법이다.", a: "X" },
   { q: "학생이 잘못을 했더라도 교사는 학생의 인격을 존중하며 지도해야 한다.", a: "O" },
   { q: "교육활동 침해 사안에서는 피해 교원과 가해 학생을 분리하는 조치가 이루어질 수 있다.", a: "O" },
   { q: "장난이었다고 말하면, 교사를 조롱하거나 모욕한 행동은 무조건 없던 일이 된다.", a: "X" },
@@ -274,11 +266,11 @@ const QUESTION_POOL = [
   { q: "교육활동을 보호하는 것은 결국 수업의 질을 높여 학생들에게도 도움이 된다.", a: "O" },
   { q: "동의 없이 교사나 친구의 사진·영상을 함부로 퍼뜨리는 것은 권리 침해가 될 수 있다.", a: "O" },
   { q: "학교 규칙이 불합리하다고 느껴질 때는 정해진 절차로 개선을 건의하기보다 그냥 무시하는 것이 옳다.", a: "X" }
-];  
 ];
 
 const QUESTIONS_PER_QUIZ = 10;
 const PICKUP_PLACE = "생활교육부실";
+const PRIZE_NAME = "공부 잇-템";   // 상위 상품 이름 (표시용)
 
 /* ============================================================
    ③ 초기화
@@ -312,7 +304,7 @@ async function refreshStock(){
     const box = $('stockBox');
     if (remaining <= 0){
       box.classList.add('sold-out');
-      $('stockNote').textContent = "키캡 키링이 모두 소진되었어요. 지금 참여하면 간식을 받을 수 있어요.";
+      $('stockNote').textContent = PRIZE_NAME + "이 모두 소진되었어요. 지금 참여하면 간식을 받을 수 있어요.";
     } else {
       box.classList.remove('sold-out');
       $('stockNote').textContent = "10문제를 모두 맞힌 학생에게 선착순으로 지급돼요.";
@@ -414,10 +406,10 @@ nextBtn.addEventListener('click',()=>{
 function prizeCardHTML(prize){
   if(prize==='keyring'){
     return `<div class="prize-award keyring">
-      <div class="pa-icon">🔑</div>
+      <div class="pa-icon">✏️</div>
       <div class="pa-label">축하합니다 · 만점!</div>
-      <div class="pa-name">키캡 키링</div>
-      <div class="pa-desc">동아리에서 직접 제작한 한정 키캡 키링을 받을 수 있어요.</div>
+      <div class="pa-name">${PRIZE_NAME}</div>
+      <div class="pa-desc">동아리에서 준비한 인기 ${PRIZE_NAME}을 받을 수 있어요.</div>
       <div class="pickup">📍 ${PICKUP_PLACE}에서 받아가세요</div>
     </div>`;
   }
@@ -445,7 +437,6 @@ async function submitResults(){
     const row = Array.isArray(data) ? data[0] : data;
     if (row){ status=row.status; prize=row.prize; correct=row.score; }
   }catch(e){
-    // 저장 실패 시에도 결과 화면은 보여주되, 로컬 계산값으로 표시
     prize = correct>=10 ? 'keyring' : 'snack';
   }finally{
     nextBtn.disabled=false; nextBtn.textContent='제출하고 결과 보기';
@@ -458,7 +449,7 @@ async function submitResults(){
   let msg;
   if(status==='already') msg="이미 참여한 기록이 있어 이전 결과를 보여드려요.";
   else if(correct>=10 && prize==='keyring') msg="완벽해요! 10문제를 모두 맞혔어요.";
-  else if(correct>=10 && prize==='snack') msg="만점이에요! 다만 키캡 키링이 모두 소진되어 간식으로 준비했어요.";
+  else if(correct>=10 && prize==='snack') msg="만점이에요! 다만 "+PRIZE_NAME+"이 모두 소진되어 간식으로 준비했어요.";
   else if(correct>=8) msg="아주 잘했어요! 핵심을 잘 알고 있네요.";
   else if(correct>=5) msg="잘했어요! 참여해 줘서 고마워요.";
   else msg="참여해 줘서 고마워요!";
